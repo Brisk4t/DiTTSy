@@ -4,7 +4,7 @@ from discord.ext import commands
 
 intents = discord.Intents.all()
 command_prefix = '//'
-TOKEN = (TOKEN)
+TOKEN = os.getenv('ONGAKU_DEV')
 bot = commands.Bot(command_prefix=command_prefix, intents=intents)
 
 
