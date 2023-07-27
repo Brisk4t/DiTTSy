@@ -1,7 +1,12 @@
 from TTS.api import TTS
 from discord.ext import commands
+from elevenlabs import generate, play
 
-class TTShandler(bot):
+
+def tts(text):
+     audio=generate(text=text, voice="Brisk4t1")
+    
+class TTShandler(commands.Cog):
 	
     def __init__(self, bot):
         self.bot = bot
@@ -9,7 +14,6 @@ class TTShandler(bot):
     @commands.command()
     async def tts(self, ctx, *, message):
         
-
 
 
 
