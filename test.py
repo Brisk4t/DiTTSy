@@ -1,6 +1,9 @@
-from TTS.api import TTS
+from elevenlabs import generate, play
 
-model = (TTS.list_models()[0])
-tts = TTS(model)
+audio = generate(
+    text="¡Hola! Mi nombre es Arnold, encantado de conocerte!",
+    voice="Arnold",
+    model='eleven_multilingual_v1'
+)
 
-wav = tts.tts("This is a test! This is also a test!!", speaker=tts.speakers[0], language=tts.languages[0])s
+play(audio)
