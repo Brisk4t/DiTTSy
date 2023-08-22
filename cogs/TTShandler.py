@@ -46,7 +46,7 @@ class TextToSpeech():
 
         save(audio, "output.mp3")
 
-        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(audio, pipe=True))
+        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio("output.mp3"))
         voice_channel.play(source)
     
     
