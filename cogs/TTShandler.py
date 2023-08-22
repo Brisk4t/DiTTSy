@@ -1,22 +1,21 @@
 from TTS.api import TTS
 from discord.ext import commands
-from elevenlabs import generate, play
+import discord
+from elevenlabs import generate, save, set_api_key
 import requests
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
+
+set_api_key(os.getenv("ELEVEN_API_KEY"))
+
 class TextToSpeech():
 
-    def __init__(self):
-        self.chunk_size=1024
-        self.url="https://api.elevenlabs.io/v1/text-to-speech/4TjmYjtAIfowLPsW3bRf/"
-        self.headers=headers = {
-            "Accept": "audio/mpeg",
-            "Content-Type": "application/json",
-            "xi-api-key": os.getenv('ELEVEN_API_KEY')
-        }
+    def __init__(self, bot):
+        print("Initialized TTS Class")
+        self.bot = bot
 
     async def join(self, ctx):
         if not ctx.message.author.voice: # if the message author is not in a voice channel
@@ -31,44 +30,42 @@ class TextToSpeech():
     
 
     async def ttsgen(self, ctx, text):
+        print(text)
         await self.join(ctx)
-
 
         voice_channel = ctx.message.guild.voice_client
 
+        audio = generate(
+            text=text,
+            voice="Brisk4t1",
+            model='eleven_multilingual_v2',
+            )
 
+        # with open('output.mp3', 'wb') as f:
+        #     for chunk in response.iter_content(chunk_size=self.chunk_size):
+        #         if chunk:
+        #             f.write(chunk)
 
-        data = {
-            "text": text,
-            "model_id": "eleven_multilingual_v1",
-            "voice_settings": {
-                "stability": 0.4,
-                "similarity_boost": 1
-            }
-        }
+        save(audio, "output.mp3")
 
-        response = requests.post(url, json=data, headers=self.headers)
-        with open('output.mp3', 'wb') as f:
-            for chunk in response.iter_content(chunk_size=CHUNK_SIZE):
-                if chunk:
-                    f.write(chunk)
-
-        voice_channel.play(audio)
+        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(audio, pipe=True))
+        voice_channel.play(source)
     
     
 class TTShandler(commands.Cog):
 	
     def __init__(self, bot):
+        print("Initialized TTShandler")
         self.bot = bot
+        self.ttsclass = TextToSpeech(bot)
 
     @commands.command()
     async def tts(self, ctx, *, message):
-         await(TextToSpeech.ttsgen(ctx, message))
+        print("tts command received") 
+        await(self.ttsclass.ttsgen(ctx, message))
         
 
 
-
-
-
 async def setup(bot):
+    print("Loaded")
     await bot.add_cog(TTShandler(bot))
