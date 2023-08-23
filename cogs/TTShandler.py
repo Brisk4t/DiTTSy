@@ -1,8 +1,6 @@
-from TTS.api import TTS
 from discord.ext import commands
 import discord
 from elevenlabs import generate, save, set_api_key
-import requests
 from dotenv import load_dotenv
 import os
 
