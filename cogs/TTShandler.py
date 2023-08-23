@@ -50,6 +50,7 @@ class TextToSpeech():
 
         source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio("output.mp3"))
         source.volume = 1
+        
         voice_channel.play(source)
     
     
